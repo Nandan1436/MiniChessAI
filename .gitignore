@@ -1,0 +1,18 @@
+# Python bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+env/
+venv/
+.venv/
+ENV/
+
+# Other common Python-related ignores
+*.egg-info/
+dist/
+build/
+*.log
+.pip_cache/
