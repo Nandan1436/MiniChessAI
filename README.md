@@ -66,7 +66,7 @@
    ```
 3. **Run the Game**
    ```bash
-   python mainn.py
+   python main.py
    ```
 4. **Play and Enjoy!**
    - Interact with the AI via the provided UI.
