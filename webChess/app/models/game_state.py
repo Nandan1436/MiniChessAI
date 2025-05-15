@@ -1,6 +1,6 @@
 from copy import deepcopy
-from piece import Piece
-from constants import ROWS, COLS
+from .piece import Piece
+from ..constants import ROWS, COLS
 
 class GameState:
     def __init__(self):

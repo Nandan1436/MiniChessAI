@@ -1,9 +1,8 @@
 import random
 import time
-import threading
-from copy import deepcopy
-from constants import ROWS, COLS
 import hashlib
+from copy import deepcopy
+from ..constants import ROWS, COLS
 
 class ChessAI:
     def __init__(self, depth=2):
@@ -13,7 +12,6 @@ class ChessAI:
         self.nodes_evaluated = 0 
 
     def _hash_board(self, game_state):
-        """Generate a unique hash for the board state."""
         board_str = ''
         for row in range(ROWS):
             for col in range(COLS):
@@ -23,7 +21,6 @@ class ChessAI:
         return hashlib.md5(board_str.encode()).hexdigest()
 
     def evaluate_board(self, game_state):
-        """Evaluate the board state for a 6x5 board."""
         self.nodes_evaluated += 1
         score = 0
         black_king_pos = None
@@ -97,7 +94,6 @@ class ChessAI:
         return score
 
     def order_moves(self, game_state, moves, team, depth):
-        """Order moves to maximize alpha-beta pruning on a 6x5 board."""
         def move_score(move):
             start, end = move
             score = 0
@@ -197,25 +193,20 @@ class ChessAI:
     def make_move(self, game_state):
         game_state.ai_thinking = True
         self.nodes_evaluated = 0
+        best_move = None
+        start_time = time.time()
+        time_limit = 2.0  
 
-        def ai_worker():
-            best_move = None
-            start_time = time.time()
-            time_limit = 2.0  
+        for d in range(1, self.depth + 1):
+            if time.time() - start_time > time_limit:
+                break
+            self.killer_moves[d] = []  
+            _, move = self.minimax(game_state, d, float('-inf'), float('inf'), True)
+            if move:
+                best_move = move
 
-            for d in range(1, self.depth + 1):
-                if time.time() - start_time > time_limit:
-                    break
-                self.killer_moves[d] = []  
-                _, move = self.minimax(game_state, d, float('-inf'), float('inf'), True)
-                if move:
-                    best_move = move
-
-            print(f"Nodes evaluated: {self.nodes_evaluated}")
-            time.sleep(0.5) 
-            if best_move:
-                start, end = best_move
-                game_state.move_piece(start[0], start[1], end[0], end[1])
-            game_state.ai_thinking = False
-
-        threading.Thread(target=ai_worker).start()
+        if best_move:
+            start, end = best_move
+            game_state.move_piece(start[0], start[1], end[0], end[1])
+        game_state.ai_thinking = False
+        return best_move
