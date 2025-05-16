@@ -5,7 +5,7 @@ from copy import deepcopy
 from ..constants import ROWS, COLS
 
 class ChessAI:
-    def __init__(self, depth=1):
+    def __init__(self, depth=2):
         self.depth = depth
         self.killer_moves = {d: [] for d in range(depth + 1)}  
         self.transposition_table = {} 
