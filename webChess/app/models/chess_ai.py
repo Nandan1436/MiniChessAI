@@ -5,7 +5,7 @@ from copy import deepcopy
 from ..constants import ROWS, COLS
 
 class ChessAI:
-    def __init__(self, depth=2):
+    def __init__(self, depth=1):
         self.depth = depth
         self.killer_moves = {d: [] for d in range(depth + 1)}  
         self.transposition_table = {} 
@@ -88,7 +88,7 @@ class ChessAI:
                 return float('inf') 
             elif game_state.is_checkmate('black'):
                 return -float('inf')  
-            elif game_state.is_stalemate():
+            elif game_state.is_stalemate(game_state.turn):
                 return 0
 
         return score
@@ -195,7 +195,7 @@ class ChessAI:
         self.nodes_evaluated = 0
         best_move = None
         start_time = time.time()
-        time_limit = 2.0  
+        time_limit = 5.0  
 
         for d in range(1, self.depth + 1):
             if time.time() - start_time > time_limit:
