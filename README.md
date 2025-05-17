@@ -60,15 +60,24 @@
    ```bash
    git clone https://github.com/Tashrif-007/MiniChessAI.git
    ```
-2. **Install Requirements**
+2. **Install backend Requirements**
    ```bash
    pip install -r requirements.txt
    ```
-3. **Run the Game**
+3. **Install Frontend Dependencies**
    ```bash
-   python main.py
+   npm i
    ```
-4. **Play and Enjoy!**
+4. **Add .env.local**
+   ```
+   NEXT_PUBLIC_API_URL="http://localhost:8000"
+   ```
+4. **Run the Frontend and Backend**
+   ```bash
+   npm run dev
+   uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+   ```
+5. **Play and Enjoy!**
    - Interact with the AI via the provided UI.
    - Experiment with different strategies and difficulty levels.
 
