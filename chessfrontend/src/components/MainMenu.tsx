@@ -33,13 +33,13 @@ export default function MainMenu({ onSelectMode }: MainMenuProps) {
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Select Difficulty</h2>
           <button className="menu-button" onClick={() => handleDifficultySelect(1)}>
-            Easy (Depth 1)
+            Easy 
           </button>
           <button className="menu-button" onClick={() => handleDifficultySelect(2)}>
-            Medium (Depth 2)
+            Medium
           </button>
           <button className="menu-button" onClick={() => handleDifficultySelect(3)}>
-            Hard (Depth 3)
+            Hard
           </button>
           <button
             className="menu-button"

@@ -26,9 +26,6 @@ export default function GameStatus({ gameState, onRestart, isAIThinking }: GameS
           Back to Menu
         </button>
       )}
-      {gameState.nodes_evaluated !== null && (
-        <p className="text-sm text-gray-500 mt-3">Nodes evaluated: {gameState.nodes_evaluated}</p>
-      )}
     </div>
   );
 }
