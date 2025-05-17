@@ -2,23 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Set global page background */
+/* Global page background with gradient */
 body {
-  background-color: #f0f0f0; /* Soft gray */
+  background: linear-gradient(to bottom, #e0e7ff, #a5b4fc);
+  min-height: 100vh;
 }
 
-/* Chessboard grid with fixed square sizes */
+/* Chessboard grid with shadow and border */
 .chessboard {
   display: grid;
   grid-template-columns: repeat(5, 100px);
   grid-template-rows: repeat(6, 100px);
   width: 500px;
   height: 600px;
-  border: 2px solid #333;
-  position: relative; /* For absolute positioning of animating piece */
+  border: 4px solid #1e293b;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+  background: #f1f5f9;
 }
 
-/* Square styling */
+/* Square styling with subtle hover effect */
 .square {
   display: flex;
   justify-content: center;
@@ -30,18 +34,23 @@ body {
   line-height: 100px;
   font-size: 2.5rem;
   box-sizing: border-box;
+  transition: background-color 0.2s;
+}
+
+.square:hover {
+  filter: brightness(1.1);
 }
 
 .light-square {
-  background-color: #eeeed2;
+  background-color: #fefce8;
 }
 
 .dark-square {
-  background-color: #769656;
+  background-color: #4b6cb7;
 }
 
 .selected {
-  background-color: #baca44 !important;
+  background-color: #facc15 !important;
 }
 
 .valid-move {
@@ -53,7 +62,7 @@ body {
   position: absolute;
   width: 20px;
   height: 20px;
-  background-color: rgba(119, 153, 245, 0.5);
+  background-color: rgba(59, 130, 246, 0.5);
   border-radius: 50%;
 }
 
@@ -62,7 +71,7 @@ body {
 }
 
 .check {
-  border: 4px solid rgba(255, 0, 0, 0.5);
+  border: 4px solid rgba(239, 68, 68, 0.7);
 }
 
 /* Disable interactions during AI thinking or animation */
@@ -71,7 +80,7 @@ body {
   opacity: 0.7;
 }
 
-/* Animating piece */
+/* Animating piece with smooth transition */
 .animating-piece {
   position: absolute;
   width: 100px;
@@ -82,5 +91,43 @@ body {
   font-size: 2.5rem;
   line-height: 100px;
   transition: transform 0.3s ease-in-out;
-  z-index: 10; /* Above board */
+  z-index: 10;
+}
+
+/* Main menu styling */
+.menu-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+}
+
+.menu-button {
+  background: linear-gradient(to right, #3b82f6, #1e40af);
+  color: white;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.menu-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Game container for centered layout */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  width: 100%;
 }

@@ -3,13 +3,16 @@
 import { useEffect, useState, useCallback } from 'react';
 import ChessBoard from '../components/ChessBoard';
 import GameStatus from '../components/GameStatus';
-import { GameState } from '../components/types';
+import MainMenu from '../components/MainMenu';
+import { GameState } from '../lib/api';
 import { initGame, selectPiece, makeMove, makeAIMove, getGameState } from '../lib/api';
 
 export default function Home() {
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isAIThinking, setIsAIThinking] = useState(false);
+  const [gameMode, setGameMode] = useState<'menu' | 'ai' | 'human'>('menu');
+  const [aiDepth, setAIDepth] = useState<number>(2);
 
   const fetchGameState = async () => {
     try {
@@ -23,11 +26,13 @@ export default function Home() {
     }
   };
 
-  const handleInitGame = async () => {
+  const handleInitGame = async (mode: 'ai' | 'human', depth?: number) => {
     try {
       setIsLoading(true);
-      const state = await initGame();
+      const state = await initGame({ mode, ai_depth: depth });
       setGameState(state);
+      setGameMode(mode);
+      setAIDepth(depth || 2);
     } catch (error) {
       console.error('Failed to initialize game:', error);
     } finally {
@@ -54,7 +59,7 @@ export default function Home() {
       setIsLoading(true);
       const state = await makeMove({ start_row, start_col, end_row, end_col });
       setGameState(state);
-      if (state.turn === 'black' && !state.game_over && !state.ai_thinking) {
+      if (gameMode === 'ai' && state.turn === 'black' && !state.game_over && !state.ai_thinking) {
         setIsAIThinking(true);
         console.log('AI thinking started');
         const startTime = Date.now();
@@ -74,31 +79,44 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [gameState, isLoading, isAIThinking]);
+  }, [gameState, isLoading, isAIThinking, gameMode]);
 
   useEffect(() => {
-    handleInitGame();
-  }, []);
+    if (gameMode !== 'menu') {
+      handleInitGame(gameMode, aiDepth);
+    }
+  }, [gameMode, aiDepth]);
 
   if (isLoading && !gameState) {
-    return <p className="text-center text-lg">Loading...</p>;
+    return <p className="text-center text-lg text-white">Loading...</p>;
   }
 
   return (
-    <div className="text-center bg-gray-100 min-h-screen">
-      <h1 className="text-4xl font-bold mb-4">MiniChess (6x5)</h1>
-      {gameState ? (
-        <>
-          <ChessBoard
-            gameState={gameState}
-            onSelectPiece={handleSelectPiece}
-            onMove={handleMove}
-            isAIThinking={isAIThinking}
-          />
-          <GameStatus gameState={gameState} onRestart={handleInitGame} isAIThinking={isAIThinking} />
-        </>
+    <div className="flex items-center justify-center min-h-screen">
+      {gameMode === 'menu' ? (
+        <MainMenu
+          onSelectMode={(mode, depth) => {
+            setGameMode(mode);
+            if (depth) setAIDepth(depth);
+          }}
+        />
       ) : (
-        <p className="text-center text-lg">Failed to load game</p>
+        <div className="game-container">
+          <h1 className="text-4xl font-bold text-indigo-800 mb-4">MiniChess (6x5)</h1>
+          {gameState ? (
+            <>
+              <ChessBoard
+                gameState={gameState}
+                onSelectPiece={handleSelectPiece}
+                onMove={handleMove}
+                isAIThinking={isAIThinking}
+              />
+              <GameStatus gameState={gameState} onRestart={() => setGameMode('menu')} isAIThinking={isAIThinking} />
+            </>
+          ) : (
+            <p className="text-center text-lg text-red-600">Failed to load game</p>
+          )}
+        </div>
       )}
     </div>
   );
