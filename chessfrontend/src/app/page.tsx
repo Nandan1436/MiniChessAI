@@ -88,11 +88,16 @@ export default function Home() {
   }, [gameMode, aiDepth]);
 
   if (isLoading && !gameState) {
-    return <p className="text-center text-lg text-white">Loading...</p>;
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <div className="w-12 h-12 border-4 border-t-violet-600 border-gray-200 rounded-full loading"></div>
+        <p className="mt-4 text-lg text-gray-700">Loading...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen p-4">
       {gameMode === 'menu' ? (
         <MainMenu
           onSelectMode={(mode, depth) => {
@@ -102,7 +107,7 @@ export default function Home() {
         />
       ) : (
         <div className="game-container">
-          <h1 className="text-4xl font-bold text-indigo-800 mb-4">MiniChess (6x5)</h1>
+          <h1 className="text-4xl font-bold text-indigo-900 mb-6">MiniChess (6x5)</h1>
           {gameState ? (
             <>
               <ChessBoard

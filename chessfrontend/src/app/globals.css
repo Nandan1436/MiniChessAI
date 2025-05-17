@@ -2,55 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global page background with gradient */
+/* Global page background with a PNG and gradient overlay */
 body {
-  background: linear-gradient(to bottom, #e0e7ff, #a5b4fc);
+  background: linear-gradient(rgba(243, 244, 246, 0.85), rgba(209, 213, 219, 0.85)),
+              url('../../public/ChatGPT\ Image\ May\ 17\,\ 2025\,\ 05_09_09\ PM.png') center/cover no-repeat fixed;
   min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
 }
 
-/* Chessboard grid with shadow and border */
+/* Chessboard with increased size and modern styling */
 .chessboard {
   display: grid;
-  grid-template-columns: repeat(5, 100px);
-  grid-template-rows: repeat(6, 100px);
-  width: 500px;
-  height: 600px;
-  border: 4px solid #1e293b;
-  border-radius: 8px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  position: relative;
-  background: #f1f5f9;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 5 / 6;
+  border: 8px solid #1e293b;
+  border-radius: 14px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+  background: #e5e7eb;
+  overflow: hidden;
 }
 
-/* Square styling with subtle hover effect */
+/* Square styling with adjusted sizes for larger board */
 .square {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 100px;
-  min-width: 100px;
-  min-height: 100px;
-  line-height: 100px;
-  font-size: 2.5rem;
-  box-sizing: border-box;
-  transition: background-color 0.2s;
+  width: 100%;
+  height: 100%;
+  font-size: clamp(2.5rem, 6vw, 3.25rem);
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  cursor: pointer;
 }
 
 .square:hover {
-  filter: brightness(1.1);
+  transform: scale(1.02);
+  filter: brightness(1.05);
 }
 
 .light-square {
-  background-color: #fefce8;
+  background-color: #fff7ed;
 }
 
 .dark-square {
-  background-color: #4b6cb7;
+  background-color: #5b21b6;
 }
 
 .selected {
-  background-color: #facc15 !important;
+  background-color: #f59e0b !important;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
 }
 
 .valid-move {
@@ -60,74 +63,142 @@ body {
 .valid-move::after {
   content: '';
   position: absolute;
-  width: 20px;
-  height: 20px;
-  background-color: rgba(59, 130, 246, 0.5);
+  width: 30%;
+  height: 30%;
+  background-color: rgba(59, 130, 246, 0.6);
   border-radius: 50%;
+  transition: opacity 0.3s ease;
 }
 
 .last-move {
-  background-color: rgba(255, 255, 0, 0.5) !important;
+  background-color: rgba(234, 179, 8, 0.4) !important;
 }
 
 .check {
-  border: 4px solid rgba(239, 68, 68, 0.7);
+  border: 5px solid rgba(220, 38, 38, 0.8);
+  animation: pulse 1s infinite;
+}
+
+/* Pulse animation for check state */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
 }
 
 /* Disable interactions during AI thinking or animation */
 .disabled {
   pointer-events: none;
-  opacity: 0.7;
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
-/* Animating piece with smooth transition */
+/* Animating piece with adjusted sizes */
 .animating-piece {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2.5rem;
-  line-height: 100px;
-  transition: transform 0.3s ease-in-out;
+  font-size: clamp(2.5rem, 6vw, 3.25rem);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
 }
 
-/* Main menu styling */
+/* Main menu with clean design */
 .menu-container {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  padding: 2rem;
-  max-width: 400px;
-  width: 100%;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Fade-in animation for menu */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .menu-button {
-  background: linear-gradient(to right, #3b82f6, #1e40af);
+  background: linear-gradient(90deg, #7c3aed, #4c1d95);
   color: white;
-  font-weight: bold;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
 }
 
 .menu-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(90deg, #8b5cf6, #6d28d9);
 }
 
-/* Game container for centered layout */
+/* Game container with adjusted padding */
 .game-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-  max-width: 600px;
-  width: 100%;
+  gap: 1.5rem;
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  max-width: 840px;
+  width: 90%;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive typography */
+h1 {
+  font-size: clamp(2.25rem, 6vw, 2.75rem);
+  font-weight: 700;
+  color: #1e293b;
+}
+
+p {
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+}
+
+/* Loading animation */
+.loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chessboard {
+    max-width: 90vw;
+  }
+  .square {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+  }
+  .game-container {
+    padding: 2rem;
+  }
+  .menu-container {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chessboard {
+    max-width: 100vw;
+  }
+  .square {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+  .game-container, .menu-container {
+    padding: 1.5rem;
+  }
 }

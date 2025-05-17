@@ -19,45 +19,30 @@ export default function MainMenu({ onSelectMode }: MainMenuProps) {
 
   return (
     <div className="menu-container">
-      <h1 className="text-3xl font-bold text-indigo-800 mb-6">MiniChess (6x5)</h1>
+      <h1 className="text-4xl font-bold text-indigo-900 mb-8">MiniChess (6x5)</h1>
       {!showDifficulty ? (
         <div className="flex flex-col gap-4">
-          <button
-            className="menu-button"
-            onClick={handlePlayVsAI}
-          >
+          <button className="menu-button" onClick={handlePlayVsAI}>
             Play vs AI
           </button>
-          <button
-            className="menu-button"
-            onClick={() => onSelectMode('human')}
-          >
+          <button className="menu-button" onClick={() => onSelectMode('human')}>
             Play vs Human
           </button>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold text-gray-700">Select Difficulty</h2>
-          <button
-            className="menu-button"
-            onClick={() => handleDifficultySelect(1)}
-          >
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Select Difficulty</h2>
+          <button className="menu-button" onClick={() => handleDifficultySelect(1)}>
             Easy (Depth 1)
           </button>
-          <button
-            className="menu-button"
-            onClick={() => handleDifficultySelect(2)}
-          >
+          <button className="menu-button" onClick={() => handleDifficultySelect(2)}>
             Medium (Depth 2)
           </button>
-          <button
-            className="menu-button"
-            onClick={() => handleDifficultySelect(3)}
-          >
+          <button className="menu-button" onClick={() => handleDifficultySelect(3)}>
             Hard (Depth 3)
           </button>
           <button
-            className="text-sm text-gray-500 hover:text-gray-700"
+            className="menu-button"
             onClick={() => setShowDifficulty(false)}
           >
             Back
