@@ -1,4 +1,6 @@
 import { GameState } from '../lib/api';
+import './GameStatus.css';
+import { useEffect } from 'react';
 
 interface GameStatusProps {
   gameState: GameState;
@@ -7,24 +9,52 @@ interface GameStatusProps {
 }
 
 export default function GameStatus({ gameState, onRestart, isAIThinking }: GameStatusProps) {
+  const isCheckmate = gameState.message?.toLowerCase().includes('checkmate');
+  const isStalemate = gameState.message?.toLowerCase().includes('stalemate');
+
+  const handleRetry = () => {
+    window.location.reload();
+  };
+
   return (
-    <div className="mt-6 text-center">
-      <p className="text-lg font-medium text-gray-800">
+    <div className="game-status-container">
+      <p className="turn-indicator">
         {gameState.turn.charAt(0).toUpperCase() + gameState.turn.slice(1)}'s turn
         {(isAIThinking || gameState.ai_thinking) && (
-          <span className="ml-3 text-violet-600 text-lg font-bold animate-pulse">AI thinking...</span>
+          <span className="ai-thinking-indicator">AI thinking...</span>
         )}
       </p>
-      {gameState.message && (
-        <p className="text-xl font-bold text-red-600 mt-3">{gameState.message}</p>
+      {gameState.message && !gameState.game_over && (
+        <p className="game-message">{gameState.message}</p>
       )}
+
+      {/* Game Over Modal */}
       {gameState.game_over && (
-        <button
-          className="mt-4 px-6 py-2.5 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-all shadow-md hover:shadow-lg"
-          onClick={onRestart}
-        >
-          Back to Menu
-        </button>
+        <div className="game-over-modal-overlay">
+          <div className="game-over-modal">
+            <div className="modal-header">
+              <div className={`modal-icon ${isCheckmate ? 'checkmate' : isStalemate ? 'stalemate' : 'game-over'}`}>
+                {isCheckmate ? '♔' : isStalemate ? '=' : '🏁'}
+              </div>
+              <h3 className="modal-title">
+                {isCheckmate ? 'Checkmate!' : isStalemate ? 'Stalemate!' : 'Game Over!'}
+              </h3>
+            </div>
+            
+            <p className="modal-message">
+              {gameState.message}
+            </p>
+            
+            <div className="modal-buttons">
+              <button
+                className="modal-button retry-button"
+                onClick={handleRetry}
+              >
+                Play Again
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

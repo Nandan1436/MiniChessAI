@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'MiniChess (6x5)',
+  title: 'MiniChessAI',
   description: 'A 6x5 chess-like game with AI opponent',
 };
 
