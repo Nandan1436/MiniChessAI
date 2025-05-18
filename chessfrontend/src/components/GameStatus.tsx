@@ -8,9 +8,10 @@ interface GameStatusProps {
   gameState: GameState;
   onRestart: () => void;
   isAIThinking: boolean;
+  gameMode: 'ai' | 'human' | 'ai_vs_ai';
 }
 
-export default function GameStatus({ gameState, onRestart, isAIThinking }: GameStatusProps) {
+export default function GameStatus({ gameState, onRestart, isAIThinking, gameMode }: GameStatusProps) {
   const isCheckmate = gameState.message?.toLowerCase().includes('checkmate');
   const isStalemate = gameState.message?.toLowerCase().includes('stalemate');
   const checkmateSound = typeof Audio !== 'undefined' ? new Audio('/checkmate.wav') : null;
@@ -22,13 +23,20 @@ export default function GameStatus({ gameState, onRestart, isAIThinking }: GameS
   }, [isCheckmate, checkmateSound]);
 
   const handleRetry = () => {
-    window.location.reload();
+    onRestart();
+  };
+
+  const getStatusText = () => {
+    if (gameMode === 'ai_vs_ai') {
+      return `AI vs. AI: ${gameState.turn.charAt(0).toUpperCase() + gameState.turn.slice(1)}'s turn`;
+    }
+    return `${gameState.turn.charAt(0).toUpperCase() + gameState.turn.slice(1)}'s turn`;
   };
 
   return (
     <div className="game-status-container">
       <p className="turn-indicator">
-        {gameState.turn.charAt(0).toUpperCase() + gameState.turn.slice(1)}'s turn
+        {getStatusText()}
         {(isAIThinking || gameState.ai_thinking) && (
           <span className="ai-thinking-indicator">AI thinking...</span>
         )}
@@ -37,7 +45,6 @@ export default function GameStatus({ gameState, onRestart, isAIThinking }: GameS
         <p className="game-message">{gameState.message}</p>
       )}
 
-      {/* Game Over Modal */}
       {gameState.game_over && (
         <div className="game-over-modal-overlay">
           <div className="game-over-modal">
@@ -49,16 +56,9 @@ export default function GameStatus({ gameState, onRestart, isAIThinking }: GameS
                 {isCheckmate ? 'Checkmate!' : isStalemate ? 'Stalemate!' : 'Game Over!'}
               </h3>
             </div>
-            
-            <p className="modal-message">
-              {gameState.message}
-            </p>
-            
+            <p className="modal-message">{gameState.message}</p>
             <div className="modal-buttons">
-              <button
-                className="modal-button retry-button"
-                onClick={handleRetry}
-              >
+              <button className="modal-button retry-button" onClick={handleRetry}>
                 Play Again
               </button>
             </div>

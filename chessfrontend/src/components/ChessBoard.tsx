@@ -8,9 +8,10 @@ interface ChessBoardProps {
   onSelectPiece: (row: number, col: number) => void;
   onMove: (start_row: number, start_col: number, end_row: number, end_col: number) => void;
   isAIThinking: boolean;
+  gameMode?: 'ai' | 'human' | 'ai_vs_ai';
 }
 
-function ChessBoard({ gameState, onSelectPiece, onMove, isAIThinking }: ChessBoardProps) {
+function ChessBoard({ gameState, onSelectPiece, onMove, isAIThinking, gameMode }: ChessBoardProps) {
   const moveSound = typeof Audio !== 'undefined' ? new Audio('/move.wav') : null;
   const getPieceSymbol = (piece: GameState['board'][0][0]) => {
     if (!piece) return '\u00A0'; // Non-breaking space
@@ -37,7 +38,7 @@ function ChessBoard({ gameState, onSelectPiece, onMove, isAIThinking }: ChessBoa
   };
 
   const handleClick = (row: number, col: number) => {
-    if (isAIThinking || gameState.ai_thinking || gameState.game_over) return;
+    if (gameMode === 'ai_vs_ai' || isAIThinking || gameState.ai_thinking || gameState.game_over) return;
     if (gameState.selected_piece) {
       const [start_row, start_col] = gameState.selected_piece;
       if (gameState.valid_moves.some(([r, c]) => r === row && c === col)) {
@@ -53,8 +54,10 @@ function ChessBoard({ gameState, onSelectPiece, onMove, isAIThinking }: ChessBoa
     }
   };
 
+  const isDisabled = gameMode === 'ai' && (isAIThinking || gameState.ai_thinking);
+
   return (
-    <div className={`chessboard mx-auto ${isAIThinking || gameState.ai_thinking ? 'disabled' : ''}`}>
+    <div className={`chessboard mx-auto ${isDisabled ? 'disabled' : ''}`}>
       {gameState.board.map((row, rowIndex) =>
         row.map((piece, colIndex) => (
           <div

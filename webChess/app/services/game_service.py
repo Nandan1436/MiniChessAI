@@ -1,4 +1,3 @@
-
 from ..models.game_state import GameState
 from ..models.chess_ai import ChessAI
 from ..schemas.game import GameStateSchema
@@ -6,14 +5,27 @@ from ..schemas.game import GameStateSchema
 class GameService:
     def __init__(self):
         self.game_state = GameState()
-        self.chess_ai = ChessAI(depth=2)
-        self.mode = "ai"  # Track game mode
-        self.ai_depth = 2  # Track AI depth
+        self.chess_ai_white = None
+        self.chess_ai_black = ChessAI(depth=2)
+        self.mode = "ai"
+        self.ai_depth_white = 2
+        self.ai_depth_black = 2
 
-    def init_game(self, mode: str = "ai", ai_depth: int = 2) -> GameStateSchema:
+    def init_game(self, mode: str = "ai", ai_depth_white: int = 2, ai_depth_black: int = 2) -> GameStateSchema:
         self.mode = mode
-        self.ai_depth = ai_depth
-        self.chess_ai = ChessAI(depth=ai_depth) if mode == "ai" else None
+        self.ai_depth_white = ai_depth_white
+        self.ai_depth_black = ai_depth_black
+
+        if mode == "ai":
+            self.chess_ai_white = None
+            self.chess_ai_black = ChessAI(depth=ai_depth_black)
+        elif mode == "ai_vs_ai":
+            self.chess_ai_white = ChessAI(depth=ai_depth_white)
+            self.chess_ai_black = ChessAI(depth=ai_depth_black)
+        else:  # human mode
+            self.chess_ai_white = None
+            self.chess_ai_black = None
+
         self.game_state = GameState()
         return GameStateSchema.from_orm(self.game_state)
 
@@ -45,14 +57,28 @@ class GameService:
         return GameStateSchema.from_orm(self.game_state)
 
     def make_ai_move(self) -> GameStateSchema:
-        if self.mode != "ai" or self.game_state.turn != 'black' or self.game_state.ai_thinking or self.game_state.game_over or not self.chess_ai:
+        if self.game_state.ai_thinking or self.game_state.game_over:
             self.game_state.message = "Invalid AI move request"
             return GameStateSchema.from_orm(self.game_state)
 
-        best_move = self.chess_ai.make_move(self.game_state)
-        response = GameStateSchema.from_orm(self.game_state)
-        response.nodes_evaluated = self.chess_ai.nodes_evaluated
-        return response
+        if self.mode == "ai" and self.game_state.turn == 'black' and self.chess_ai_black:
+            best_move = self.chess_ai_black.make_move(self.game_state, 'black')
+            response = GameStateSchema.from_orm(self.game_state)
+            response.nodes_evaluated = self.chess_ai_black.nodes_evaluated
+            return response
+        elif self.mode == "ai_vs_ai":
+            if self.game_state.turn == 'white' and self.chess_ai_white:
+                best_move = self.chess_ai_white.make_move(self.game_state, 'white')
+                response = GameStateSchema.from_orm(self.game_state)
+                response.nodes_evaluated = self.chess_ai_white.nodes_evaluated
+                return response
+            elif self.game_state.turn == 'black' and self.chess_ai_black:
+                best_move = self.chess_ai_black.make_move(self.game_state, 'black')
+                response = GameStateSchema.from_orm(self.game_state)
+                response.nodes_evaluated = self.chess_ai_black.nodes_evaluated
+                return response
+        self.game_state.message = "Invalid AI move request"
+        return GameStateSchema.from_orm(self.game_state)
 
     def get_game_state(self) -> GameStateSchema:
         return GameStateSchema.from_orm(self.game_state)

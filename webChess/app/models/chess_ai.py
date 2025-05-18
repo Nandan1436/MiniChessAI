@@ -7,9 +7,9 @@ from ..constants import ROWS, COLS
 class ChessAI:
     def __init__(self, depth=2):
         self.depth = depth
-        self.killer_moves = {d: [] for d in range(depth + 1)}  
-        self.transposition_table = {} 
-        self.nodes_evaluated = 0 
+        self.killer_moves = {d: [] for d in range(depth + 1)}
+        self.transposition_table = {}
+        self.nodes_evaluated = 0
 
     def _hash_board(self, game_state):
         board_str = ''
@@ -25,7 +25,7 @@ class ChessAI:
         score = 0
         black_king_pos = None
         white_king_pos = None
-        pawn_counts = {'black': [0] * COLS, 'white': [0] * COLS} 
+        pawn_counts = {'black': [0] * COLS, 'white': [0] * COLS}
 
         for row in range(ROWS):
             for col in range(COLS):
@@ -43,29 +43,29 @@ class ChessAI:
                     if piece.type == 'pawn':
                         pawn_counts[piece.team][col] += 1
                         if piece.team == 'black':
-                            score += multiplier * 0.2 * row  
+                            score += multiplier * 0.2 * row
                         else:
                             score += multiplier * 0.2 * (ROWS - 1 - row)
 
                     if 1 <= row <= 4 and 1 <= col <= 3:
-                        score += multiplier * 0.15  
+                        score += multiplier * 0.15
                     elif 0 <= row <= 5 and 0 <= col <= 4:
                         score += multiplier * 0.05
 
                     if piece.type == 'knight':
-                        center_dist = abs(2.5 - col) + abs(2.5 - row)  
+                        center_dist = abs(2.5 - col) + abs(2.5 - row)
                         score += multiplier * (3 - center_dist) * 0.1
 
                     moves = game_state.get_valid_moves(row, col)
-                    score += multiplier * len(moves) * 0.15  
+                    score += multiplier * len(moves) * 0.15
 
         for col in range(COLS):
             for team in ['black', 'white']:
                 multiplier = 1 if team == 'black' else -1
-                if pawn_counts[team][col] > 1:  
+                if pawn_counts[team][col] > 1:
                     score += multiplier * -0.6
                 if pawn_counts[team][col] > 0 and all(pawn_counts[team][c] == 0 for c in [col-1, col+1] if 0 <= c < COLS):
-                    score += multiplier * -0.4  
+                    score += multiplier * -0.4
 
         if black_king_pos and white_king_pos:
             for team, king_pos in [('black', black_king_pos), ('white', white_king_pos)]:
@@ -79,15 +79,15 @@ class ChessAI:
                     score += multiplier * -0.4
 
         if game_state.is_in_check('white'):
-            score += 0.7  
+            score += 0.7
         elif game_state.is_in_check('black'):
-            score -= 0.7  
+            score -= 0.7
 
         if game_state.game_over:
             if game_state.is_checkmate('white'):
-                return float('inf') 
+                return float('inf')
             elif game_state.is_checkmate('black'):
-                return -float('inf')  
+                return -float('inf')
             elif game_state.is_stalemate(game_state.turn):
                 return 0
 
@@ -100,7 +100,7 @@ class ChessAI:
 
             target = game_state.board[end[0]][end[1]]
             if target and target.team != team:
-                score += target.value * 100 
+                score += target.value * 100
 
             new_state = deepcopy(game_state)
             new_state.move_piece(start[0], start[1], end[0], end[1])
@@ -113,7 +113,7 @@ class ChessAI:
             piece = game_state.board[start[0]][start[1]]
             if piece.type == 'pawn':
                 if (team == 'black' and end[0] == ROWS - 1) or (team == 'white' and end[0] == 0):
-                    score += 900  
+                    score += 900
 
             if 1 <= end[0] <= 4 and 1 <= end[1] <= 3:
                 score += 15
@@ -126,14 +126,14 @@ class ChessAI:
             if move in moves and move not in seen:
                 ordered_moves.append(move)
                 seen.add(move)
-        
+
         for move in moves:
             if move not in seen:
                 ordered_moves.append(move)
-        
+
         return sorted(ordered_moves, key=move_score, reverse=True)
 
-    def minimax(self, game_state, depth, alpha, beta, maximizing):
+    def minimax(self, game_state, depth, alpha, beta, team):
         board_hash = self._hash_board(game_state)
         if board_hash in self.transposition_table and self.transposition_table[board_hash][0] >= depth:
             return self.transposition_table[board_hash][1], self.transposition_table[board_hash][2]
@@ -144,15 +144,16 @@ class ChessAI:
             return score, None
 
         best_move = None
+        maximizing = (team == game_state.turn)
         if maximizing:
             max_eval = float('-inf')
-            moves = game_state.get_all_possible_moves('black')
-            moves = self.order_moves(game_state, moves, 'black', depth)
+            moves = game_state.get_all_possible_moves(team)
+            moves = self.order_moves(game_state, moves, team, depth)
 
             for start, end in moves:
                 new_state = deepcopy(game_state)
                 new_state.move_piece(start[0], start[1], end[0], end[1])
-                eval_score, _ = self.minimax(new_state, depth - 1, alpha, beta, False)
+                eval_score, _ = self.minimax(new_state, depth - 1, alpha, beta, team)
 
                 if eval_score > max_eval:
                     max_eval = eval_score
@@ -169,13 +170,14 @@ class ChessAI:
 
         else:
             min_eval = float('inf')
-            moves = game_state.get_all_possible_moves('white')
-            moves = self.order_moves(game_state, moves, 'white', depth)
+            opponent = 'white' if team == 'black' else 'black'
+            moves = game_state.get_all_possible_moves(opponent)
+            moves = self.order_moves(game_state, moves, opponent, depth)
 
             for start, end in moves:
                 new_state = deepcopy(game_state)
                 new_state.move_piece(start[0], start[1], end[0], end[1])
-                eval_score, _ = self.minimax(new_state, depth - 1, alpha, beta, True)
+                eval_score, _ = self.minimax(new_state, depth - 1, alpha, beta, team)
 
                 if eval_score < min_eval:
                     min_eval = eval_score
@@ -190,18 +192,18 @@ class ChessAI:
             self.transposition_table[board_hash] = (depth, min_eval, best_move)
             return min_eval, best_move
 
-    def make_move(self, game_state):
+    def make_move(self, game_state, team):
         game_state.ai_thinking = True
         self.nodes_evaluated = 0
         best_move = None
         start_time = time.time()
-        time_limit = 5.0  
+        time_limit = 5.0
 
         for d in range(1, self.depth + 1):
             if time.time() - start_time > time_limit:
                 break
-            self.killer_moves[d] = []  
-            _, move = self.minimax(game_state, d, float('-inf'), float('inf'), True)
+            self.killer_moves[d] = []
+            _, move = self.minimax(game_state, d, float('-inf'), float('inf'), team)
             if move:
                 best_move = move
 
