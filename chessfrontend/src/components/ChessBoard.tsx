@@ -13,17 +13,18 @@ interface ChessBoardProps {
 
 function ChessBoard({ gameState, onSelectPiece, onMove, isAIThinking, gameMode }: ChessBoardProps) {
   const moveSound = typeof Audio !== 'undefined' ? new Audio('/move.wav') : null;
-  const getPieceSymbol = (piece: GameState['board'][0][0]) => {
-    if (!piece) return '\u00A0'; // Non-breaking space
-    const symbols: Record<string, { white: string; black: string }> = {
-      pawn: { white: '♙', black: '♟' },
-      knight: { white: '♘', black: '♞' },
-      bishop: { white: '♗', black: '♝' },
-      rook: { white: '♖', black: '♜' },
-      queen: { white: '♕', black: '♛' },
-      king: { white: '♔', black: '♚' },
+
+  const getPieceImage = (piece: GameState['board'][0][0]) => {
+    if (!piece) return null;
+    const images: Record<string, { white: string; black: string }> = {
+      pawn: { white: '/white_pawn.png', black: '/black_pawn.png' },
+      knight: { white: '/white_knight.png', black: '/black_knight.png' },
+      bishop: { white: '/white_bishop.png', black: '/black_bishop.png' },
+      rook: { white: '/white_rook.png', black: '/black_rook.png' },
+      queen: { white: '/white_queen.png', black: '/black_queen.png' },
+      king: { white: '/white_king.png', black: '/black_king.png' },
     };
-    return symbols[piece.type]?.[piece.team as 'white' | 'black'] || '\u00A0';
+    return images[piece.type]?.[piece.team as 'white' | 'black'] || null;
   };
 
   const isLastMove = (row: number, col: number) => {
@@ -72,8 +73,17 @@ function ChessBoard({ gameState, onSelectPiece, onMove, isAIThinking, gameMode }
               gameState.valid_moves.some(([r, c]) => r === rowIndex && c === colIndex) ? 'valid-move' : ''
             } ${isLastMove(rowIndex, colIndex) ? 'last-move' : ''} ${isInCheck(rowIndex, colIndex) ? 'check' : ''}`}
             onClick={() => handleClick(rowIndex, colIndex)}
-            dangerouslySetInnerHTML={{ __html: getPieceSymbol(piece) }}
-          />
+          >
+            <div className="piece">
+              {piece && (
+                <img
+                  src={getPieceImage(piece)!}
+                  alt={`${piece.team} ${piece.type}`}
+                  className="piece-image"
+                />
+              )}
+            </div>
+          </div>
         ))
       )}
     </div>
@@ -81,3 +91,4 @@ function ChessBoard({ gameState, onSelectPiece, onMove, isAIThinking, gameMode }
 }
 
 export default memo(ChessBoard);
+

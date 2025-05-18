@@ -10,7 +10,76 @@ body {
   font-family: 'Inter', sans-serif;
   color: #1f2937;
 }
+.chessboard {
+  display: grid;
+  grid-template-columns: repeat(5, 80px);
+  grid-template-rows: repeat(6, 80px);
+  width: 400px; /* 5 * 80px */
+  height: 480px; /* 6 * 80px */
+  border: 2px solid #4a5568;
+}
 
+.square {
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.light-square {
+  background-color: #f0d9b5;
+}
+
+.dark-square {
+  background-color: #b58863;
+}
+
+.selected {
+  background-color: #38a169 !important;
+}
+
+.valid-move {
+  background-color: #68d391 !important;
+}
+
+.last-move {
+  background-color: #f6e05e !important;
+}
+
+.check {
+  background-color: #e53e3e !important;
+}
+
+.piece {
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.piece-image {
+  max-width: 70px;
+  max-height: 70px;
+  object-fit: contain;
+}
+
+.chessboard.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 /* Chessboard with increased size and modern styling */
 .chessboard {
   display: grid;
@@ -242,3 +311,5 @@ p {
     padding: 1.5rem;
   }
 }
+
+
