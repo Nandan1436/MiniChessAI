@@ -11,6 +11,7 @@ interface ChessBoardProps {
 }
 
 function ChessBoard({ gameState, onSelectPiece, onMove, isAIThinking }: ChessBoardProps) {
+  const moveSound = typeof Audio !== 'undefined' ? new Audio('/move.wav') : null;
   const getPieceSymbol = (piece: GameState['board'][0][0]) => {
     if (!piece) return '\u00A0'; // Non-breaking space
     const symbols: Record<string, { white: string; black: string }> = {
@@ -41,6 +42,9 @@ function ChessBoard({ gameState, onSelectPiece, onMove, isAIThinking }: ChessBoa
       const [start_row, start_col] = gameState.selected_piece;
       if (gameState.valid_moves.some(([r, c]) => r === row && c === col)) {
         onMove(start_row, start_col, row, col);
+        if (moveSound) {
+          moveSound.play().catch((error) => console.error('Failed to play move sound:', error));
+        }
       } else {
         onSelectPiece(row, col);
       }

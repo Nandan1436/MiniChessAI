@@ -1,6 +1,8 @@
+'use client';
+
+import { useEffect } from 'react';
 import { GameState } from '../lib/api';
 import './GameStatus.css';
-import { useEffect } from 'react';
 
 interface GameStatusProps {
   gameState: GameState;
@@ -11,6 +13,13 @@ interface GameStatusProps {
 export default function GameStatus({ gameState, onRestart, isAIThinking }: GameStatusProps) {
   const isCheckmate = gameState.message?.toLowerCase().includes('checkmate');
   const isStalemate = gameState.message?.toLowerCase().includes('stalemate');
+  const checkmateSound = typeof Audio !== 'undefined' ? new Audio('/checkmate.wav') : null;
+
+  useEffect(() => {
+    if (isCheckmate && checkmateSound) {
+      checkmateSound.play().catch((error) => console.error('Failed to play checkmate sound:', error));
+    }
+  }, [isCheckmate, checkmateSound]);
 
   const handleRetry = () => {
     window.location.reload();
