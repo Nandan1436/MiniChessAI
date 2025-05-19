@@ -26,6 +26,13 @@ export default function GameStatus({ gameState, onRestart, isAIThinking, gameMod
     onRestart();
   };
 
+  const handleCloseModal = () => {
+    const modalOverlay = document.querySelector('.game-over-modal-overlay');
+    if (modalOverlay) {
+      modalOverlay.classList.add('hidden');
+    }
+  };
+
   const getStatusText = () => {
     if (gameMode === 'ai_vs_ai') {
       return `AI vs. AI: ${gameState.turn.charAt(0).toUpperCase() + gameState.turn.slice(1)}'s turn`;
@@ -48,6 +55,9 @@ export default function GameStatus({ gameState, onRestart, isAIThinking, gameMod
       {gameState.game_over && (
         <div className="game-over-modal-overlay">
           <div className="game-over-modal">
+            <button className="modal-close-button" onClick={handleCloseModal} aria-label="Close modal">
+              ×
+            </button>
             <div className="modal-header">
               <div className={`modal-icon ${isCheckmate ? 'checkmate' : isStalemate ? 'stalemate' : 'game-over'}`}>
                 {isCheckmate ? '♔' : isStalemate ? '=' : '🏁'}
