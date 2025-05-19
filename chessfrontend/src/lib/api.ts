@@ -24,7 +24,7 @@ interface GameInit {
   ai_depth_black?: number;
 }
 
-const API_URL = 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function initGame(init: GameInit): Promise<GameState> {
   const response = await fetch(`${API_URL}/game/init`, {
@@ -37,6 +37,7 @@ export async function initGame(init: GameInit): Promise<GameState> {
     }),
   });
   if (!response.ok) throw new Error(`Failed to initialize game: ${response.statusText}`);
+  console.log(API_URL)
   return response.json();
 }
 
