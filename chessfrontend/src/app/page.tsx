@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import ChessBoard from '../components/ChessBoard';
 import GameStatus from '../components/GameStatus';
 import MainMenu from '../components/MainMenu';
-import { GameState, initGame, makeAIMove, selectPiece, makeMove, getGameState } from '../lib/api';
+import { GameState, initGame, makeAIMove, selectPiece, makeMove} from '../lib/api';
 
 export default function Home() {
   const [gameState, setGameState] = useState<GameState | null>(null);
@@ -15,19 +15,7 @@ export default function Home() {
   const [aiDepthBlack, setAIDepthBlack] = useState<number>(2);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchGameState = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const state = await getGameState();
-      setGameState(state);
-    } catch (error) {
-      console.error('Failed to fetch game state:', error);
-      setError('Failed to fetch game state. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  
 
   const handleInitGame = async (mode: 'ai' | 'human' | 'ai_vs_ai', depthWhite?: number, depthBlack?: number) => {
     try {

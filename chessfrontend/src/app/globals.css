@@ -5,7 +5,7 @@
 /* Global page background with a PNG and gradient overlay */
 body {
   background: linear-gradient(rgba(243, 244, 246, 0.85), rgba(209, 213, 219, 0.85)),
-              url('../../public/ChatGPT\ Image\ May\ 17\,\ 2025\,\ 05_09_09\ PM.png') center/cover no-repeat fixed;
+              url('/bg.png') center/cover no-repeat fixed;
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
   color: #1f2937;

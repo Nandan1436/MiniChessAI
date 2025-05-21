@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -15,10 +14,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js" crossOrigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js" crossOrigin="anonymous"></script>
       </head>
-      <body className="bg-gray-100 flex justify-center items-center min-h-screen">{children}</body>
+      <body className="bg-gray-100 flex justify-center items-center min-h-screen">
+        {children}
+      </body>
     </html>
   );
 }

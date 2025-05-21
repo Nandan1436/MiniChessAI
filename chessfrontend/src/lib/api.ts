@@ -1,8 +1,10 @@
+import { Piece } from "@/components/types";
+
 export interface GameState {
-  board: Array<Array<{ team: string; type: string; value: number; has_moved: boolean } | null>>;
-  turn: string;
+  board: (Piece | null)[][];
+  turn: 'white' | 'black';
   selected_piece: [number, number] | null;
-  valid_moves: Array<[number, number]>;
+  valid_moves: [number, number][];
   last_move: [[number, number], [number, number]] | null;
   game_over: boolean;
   message: string;
@@ -10,6 +12,7 @@ export interface GameState {
   check: { white: boolean; black: boolean };
   nodes_evaluated: number | null;
 }
+
 
 interface Move {
   start_row: number;
